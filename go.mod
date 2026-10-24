@@ -2,7 +2,10 @@ module github.com/kirsrus/ip2flag
 
 go 1.26.0
 
-require github.com/getlantern/systray v1.2.2
+require (
+	github.com/getlantern/systray v1.2.2
+	github.com/iamcalledrob/netstatus v1.0.2
+)
 
 require (
 	github.com/getlantern/context v0.0.0-20190109183933-c447772a6520 // indirect

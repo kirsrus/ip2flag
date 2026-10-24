@@ -3,7 +3,7 @@ version: "3"
 
 vars:
   GIT_VERSION:
-    sh: git describe --abbrev=0 --tags
+    sh: git describe --abbrev=0 --tags 2>/dev/null || echo "v0.0.0"
 
 tasks:
 
@@ -16,6 +16,9 @@ tasks:
     env:
       CGO_ENABLED: 1
       GODEBUG: cgocheck=0
+      CGO_LDFLAGS: "-luuid"
+      CGO_CFLAGS: "-Wno-deprecated"
+      CGO_CXXFLAGS: "-Wno-conversion-null"      
     cmds:
       - go run -ldflags "-X github.com/kirsrus/ip2flag/main.version={{.GIT_VERSION}}" --race -v main.go
 
@@ -25,7 +28,6 @@ tasks:
       - cmd: mkdir build
         ignore_error: true
       - task: build_windows
-      - task: build_linux
 
   build_windows:
     env:
@@ -33,14 +35,8 @@ tasks:
       GOOS: windows
       CGO_ENABLED: 1
       GODEBUG: cgocheck=0
+      CGO_LDFLAGS: "-luuid"
+      CGO_CFLAGS: "-Wno-deprecated"
+      CGO_CXXFLAGS: "-Wno-conversion-null"      
     cmds:
       - go build -ldflags "-X github.com/kirsrus/ip2flag/main.version={{.GIT_VERSION}}" -v -o build/ip2flag.exe main.go
-
-  build_linux:
-    env:
-      GOARCH: amd64
-      GOOS: linux
-      CGO_ENABLED: 1
-      GODEBUG: cgocheck=0
-    cmds:
-      - go build -ldflags "-X github.com/kirsrus/ip2flag/main.version={{.GIT_VERSION}}" -v -o build/ip2flag main.go
